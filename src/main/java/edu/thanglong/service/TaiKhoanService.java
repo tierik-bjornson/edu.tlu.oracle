@@ -1,9 +1,12 @@
 package edu.thanglong.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,7 +20,13 @@ public class TaiKhoanService {
     }
 
     public void rutTien(int taiKhoan, double soTien) {
-        jdbc.update("CALL ngan_hang.rut_tien(?, ?)", taiKhoan, soTien);
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://54.179.23.91:8080/api/nganhang/ruttien";
+        Map<String, Object> request = new HashMap<>();
+        request.put("taiKhoan", taiKhoan);
+        request.put("soTien", soTien);
+        String response = restTemplate.postForObject(url, request, String.class);
+
     }
 
     public void guiTien(int taiKhoan, double soTien) {
@@ -34,9 +43,8 @@ public class TaiKhoanService {
 
     public List<String> inSaoKeThang(int taiKhoan, int thang, int nam) {
         return jdbc.query(
-            "SELECT TO_CHAR(ngay_giao_dich, 'YYYY-MM-DD') || ' | ' || loai_giao_dich || ' | ' || so_tien FROM giao_dich WHERE ma_tai_khoan = ? AND EXTRACT(MONTH FROM ngay_giao_dich) = ? AND EXTRACT(YEAR FROM ngay_giao_dich) = ? ORDER BY ngay_giao_dich",
-            (rs, rowNum) -> rs.getString(1),
-            taiKhoan, thang, nam
-        );
+                "SELECT TO_CHAR(ngay_giao_dich, 'YYYY-MM-DD') || ' | ' || loai_giao_dich || ' | ' || so_tien FROM giao_dich WHERE ma_tai_khoan = ? AND EXTRACT(MONTH FROM ngay_giao_dich) = ? AND EXTRACT(YEAR FROM ngay_giao_dich) = ? ORDER BY ngay_giao_dich",
+                (rs, rowNum) -> rs.getString(1),
+                taiKhoan, thang, nam);
     }
 }
