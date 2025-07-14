@@ -19,21 +19,21 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                echo "📥 Cloning source code..."
+                echo "Cloning source code..."
                 checkout scm
             }
         }
 
         stage('Build') {
             steps {
-                echo "⚙️ Building Spring Boot JAR..."
+                echo "Building Spring Boot JAR..."
                 sh 'mvn clean package -DskipTests'
             }
         }
 
         stage('Test') {
             steps {
-                echo "✅ Running unit tests..."
+                echo "Running unit tests..."
                 sh 'mvn test'
             }
         }
