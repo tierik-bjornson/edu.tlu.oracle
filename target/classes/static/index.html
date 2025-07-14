@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Ngân hàng - Giao dịch</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background-color: #f8f9fa;
+    }
+    h1 {
+        color: #2c3e50;
+        text-align: center;
+    }
+    .container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        max-width: 1200px;
+        margin: auto;
+    }
+    .form-section {
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .form-section h2 {
+        color: #2980b9;
+        margin-bottom: 10px;
+        font-size: 18px;
+    }
+    .form-section h2 i {
+        margin-right: 5px;
+        color: #3498db;
+    }
+    label {
+        display: block;
+        margin-top: 10px;
+        font-size: 14px;
+    }
+    input {
+        width: 100%;
+        padding: 6px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    button {
+        margin-top: 15px;
+        padding: 8px 12px;
+        background-color: #2980b9;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        width: 100%;
+    }
+    button:hover {
+        background-color: #3498db;
+    }
+    .result {
+        margin-top: 10px;
+        color: green;
+        font-size: 14px;
+    }
+    pre {
+        background: #f4f4f4;
+        padding: 10px;
+        overflow-x: auto;
+    }
+</style>
+</head>
+<body>
+
+<h1><i class="fas fa-university"></i> Hệ thống giao dịch ngân hàng</h1>
+
+<div class="container">
+
+    <div class="form-section">
+        <h2><i class="fas fa-exchange-alt"></i> Chuyển tiền</h2>
+        <label>Từ tài khoản: <input type="number" id="tuTaiKhoan"></label>
+        <label>Đến tài khoản: <input type="number" id="denTaiKhoan"></label>
+        <label>Số tiền: <input type="number" id="soTien"></label>
+        <button onclick="chuyenTien()">Thực hiện</button>
+        <div class="result" id="resChuyen"></div>
+    </div>
+
+    <div class="form-section">
+        <h2><i class="fas fa-wallet"></i> Xem số dư</h2>
+        <label>Tài khoản: <input type="number" id="laySoDuTaiKhoan"></label>
+        <button onclick="laySoDu()">Thực hiện</button>
+        <div class="result" id="resSoDu"></div>
+    </div>
+
+    <div class="form-section">
+        <h2><i class="fas fa-file-invoice-dollar"></i> In sao kê tháng</h2>
+        <label>Tài khoản: <input type="number" id="stk"></label>
+        <label>Tháng: <input type="number" id="thang"></label>
+        <label>Năm: <input type="number" id="nam"></label>
+        <button onclick="inSaoKe()">Thực hiện</button>
+        <div class="result"><pre id="resSaoKe"></pre></div>
+    </div>
+
+    <div class="form-section">
+        <h2><i class="fas fa-hand-holding-usd"></i> Rút tiền</h2>
+        <label>Mã tài khoản: <input type="number" id="tkRut"></label>
+        <label>Số tiền: <input type="number" id="soTienRut" step="0.01"></label>
+        <button onclick="rutTien()">Thực hiện</button>
+        <div class="result" id="resRut"></div>
+    </div>
+
+    <div class="form-section">
+        <h2><i class="fas fa-piggy-bank"></i> Gửi tiền</h2>
+        <label>Mã tài khoản: <input type="number" id="tkGui"></label>
+        <label>Số tiền: <input type="number" id="soTienGui" step="0.01"></label>
+        <button onclick="guiTien()">Thực hiện</button>
+        <div class="result" id="resGui"></div>
+    </div>
+
+    <div class="form-section">
+        <h2><i class="fas fa-percent"></i> Tính lãi</h2>
+        <label>Tỷ lệ (%): <input type="number" id="tyLeLai" step="0.01"></label>
+        <button onclick="tinhLai()">Thực hiện</button>
+        <div class="result" id="resLai"></div>
+    </div>
+
+</div>
+
+<script>
+function laySoDu() {
+    let id = $("#laySoDuTaiKhoan").val();
+    $.get('/api/ngan_hang_goi_lenh/lay_so_du/' + id, function (data) {
+        $('#resSoDu').text('Số dư: ' + data);
+    }).fail(function () {
+        $('#resSoDu').text('Không lấy được số dư');
+    });
+}
+function inSaoKe() {
+    const taiKhoan = $("#stk").val();
+    const thang = $("#thang").val();
+    const nam = $("#nam").val();
+    $.get(`/api/ngan_hang_goi_lenh/in_sao_ke_thang?taiKhoan=${taiKhoan}&thang=${thang}&nam=${nam}`, function (data) {
+        $('#resSaoKe').html(data.join("\n"));
+    }).fail(function () {
+        $('#resSaoKe').text('Lỗi khi in sao kê');
+    });
+}
+function chuyenTien() {
+    $.ajax({
+        url: '/api/ngan_hang_goi_lenh/chuyen_tien',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            tuTaiKhoan: parseInt($('#tuTaiKhoan').val()),
+            denTaiKhoan: parseInt($('#denTaiKhoan').val()),
+            soTien: parseFloat($('#soTien').val())
+        }),
+        success: res => $('#resChuyen').text(res),
+        error: () => $('#resChuyen').text('Lỗi khi chuyển tiền')
+    });
+}
+function rutTien() {
+    $.ajax({
+        url: '/api/ngan_hang_goi_lenh/rut_tien',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            taiKhoan: parseInt($('#tkRut').val()),
+            soTien: parseFloat($('#soTienRut').val())
+        }),
+        success: res => $('#resRut').text(res),
+        error: () => $('#resRut').text('Lỗi khi rút tiền')
+    });
+}
+function guiTien() {
+    $.ajax({
+        url: '/api/ngan_hang_goi_lenh/gui_tien',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            taiKhoan: parseInt($('#tkGui').val()),
+            soTien: parseFloat($('#soTienGui').val())
+        }),
+        success: res => $('#resGui').text(res),
+        error: () => $('#resGui').text('Lỗi khi gửi tiền')
+    });
+}
+function tinhLai() {
+    $.ajax({
+        url: '/api/ngan_hang_goi_lenh/tinh_lai?tyLe=' + parseFloat($('#tyLeLai').val()),
+        type: 'POST',
+        success: res => $('#resLai').text(res),
+        error: () => $('#resLai').text('Lỗi khi tính lãi')
+    });
+}
+</script>
+
+</body>
+</html>
