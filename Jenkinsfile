@@ -40,26 +40,26 @@ pipeline {
 
         stage('Archive Artifact') {
             steps {
-                echo "📦 Archiving built JAR..."
+                echo "Archiving built JAR..."
                 archiveArtifacts artifacts: "${TARGET_PATH}", fingerprint: true
             }
         }
 
         stage('Deploy') {
             steps {
-                echo "🚀 Deploying ${APP_NAME}..."
+                echo "Deploying ${APP_NAME}..."
 
                 sh """
-                    echo "📦 Copying new JAR..."
+                    echo "Copying new JAR..."
                     sudo cp ${TARGET_PATH} ${DEPLOY_PATH}
 
-                    echo "🔄 Reloading systemd..."
+                    echo "Reloading systemd..."
                     sudo systemctl daemon-reload
 
-                    echo "♻️ Restarting ${APP_NAME}..."
+                    echo "Restarting ${APP_NAME}..."
                     sudo systemctl restart ${APP_NAME}
 
-                    echo "🔍 Checking status..."
+                    echo "Checking status..."
                     sudo systemctl status ${APP_NAME} --no-pager
                 """
             }
@@ -68,13 +68,13 @@ pipeline {
 
     post {
         always {
-            echo "✅ Pipeline finished."
+            echo "Pipeline finished."
         }
         success {
-            echo "🎉 Deployment succeeded."
+            echo "Deployment succeeded."
         }
         failure {
-            echo "❌ Pipeline failed."
+            echo "Pipeline failed."
         }
     }
 }
