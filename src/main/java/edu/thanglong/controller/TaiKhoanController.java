@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import edu.thanglong.model.ChuyenTienRequest;
 import edu.thanglong.model.GiaoDichRequest;
 import edu.thanglong.service.TaiKhoanService;
@@ -29,20 +31,20 @@ public class TaiKhoanController {
     private final TaiKhoanService taiKhoanService;
 
     @PostMapping("/chuyen_tien")
-    public ResponseEntity<String> chuyenTien(@RequestBody ChuyenTienRequest request) {
-        taiKhoanService.chuyenTien(request.getFrom(), request.getTo(), request.getAmount());
+    public ResponseEntity<String> chuyenTien(@RequestBody ChuyenTienRequest request) throws JsonProcessingException {
+        taiKhoanService.chuyenTien(request.getTuTaiKhoan(), request.getDenTaiKhoan(), request.getSoTien());
         return ResponseEntity.ok("Chuyen tien thanh cong");
     }
 
     @PostMapping("/rut_tien")
-    public ResponseEntity<String> rutTien(@RequestBody GiaoDichRequest request) {
+    public ResponseEntity<String> rutTien(@RequestBody GiaoDichRequest request) throws JsonProcessingException {
         taiKhoanService.rutTien(request.getMaTaiKhoan(), request.getSoTien());
         return ResponseEntity.ok("Rut tien thanh cong");
     }
 
 
     @PostMapping("/gui_tien")
-    public ResponseEntity<String> guiTien(@RequestBody GiaoDichRequest request) {
+    public ResponseEntity<String> guiTien(@RequestBody GiaoDichRequest request) throws JsonProcessingException {
         taiKhoanService.guiTien(request.getMaTaiKhoan(), request.getSoTien());
         return ResponseEntity.ok("Gui tien thanh cong");
     }

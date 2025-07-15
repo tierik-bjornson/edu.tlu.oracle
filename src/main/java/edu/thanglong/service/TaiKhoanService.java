@@ -5,6 +5,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.springframework.http.*;
 
 import java.util.HashMap;
@@ -30,15 +34,21 @@ public class TaiKhoanService {
 //        jdbc.update("CALL ngan_hang.chuyen_tien(?, ?, ?)", tu, den, soTien);
 //    }
     
-    public void chuyenTien(Long tu, Long den, BigDecimal soTien) {
+    public void chuyenTien(Long tu, Long den, BigDecimal soTien) throws JsonProcessingException {
         String url = baseUrl + "/chuyentien";
-
         Map<String, Object> body = new HashMap<>();
         body.put("from", tu);
         body.put("to", den);
         body.put("amount", soTien);
+        
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonPayload = objectMapper.writeValueAsString(body);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> requestEntity = new HttpEntity<>(jsonPayload, headers);
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.postForEntity(url, requestEntity, String.class);        
 
-        restTemplate.postForEntity(url, body, String.class);
     }
     
 
@@ -47,15 +57,20 @@ public class TaiKhoanService {
 //        jdbc.update("CALL ngan_hang.rut_tien(?, ?)", taiKhoan, soTien);
 //    }
     
-    public void rutTien(Long taiKhoan, BigDecimal soTien) {
-//        String url = baseUrl + "/ruttien";
-    	String url ="http://localhost:8080/api/nganhang/ruttien";
+    public void rutTien(Long taiKhoan, BigDecimal soTien) throws JsonProcessingException {
+        String url = baseUrl + "/ruttien";
 
         Map<String, Object> body = new HashMap<>();
         body.put("maTaiKhoan", taiKhoan);
         body.put("soTien", soTien);
-
-        restTemplate.postForEntity(url, body, String.class);
+        //
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonPayload = objectMapper.writeValueAsString(body);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> requestEntity = new HttpEntity<>(jsonPayload, headers);
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.postForEntity(url, requestEntity, String.class);   
     }
     
 
@@ -64,14 +79,21 @@ public class TaiKhoanService {
 //        jdbc.update("CALL ngan_hang_goi_lenh.gui_tien(?, ?)", taiKhoan, soTien);
 //    }
     
-    public void guiTien(Long taiKhoan, BigDecimal soTien) {
+    public void guiTien(Long taiKhoan, BigDecimal soTien) throws JsonProcessingException {
         String url = baseUrl + "/guitien";
 
         Map<String, Object> request = new HashMap<>();
         request.put("maTaiKhoan", taiKhoan);
         request.put("soTien", soTien);
 
-        restTemplate.postForEntity(url, request, String.class);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonPayload = objectMapper.writeValueAsString(request);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> requestEntity = new HttpEntity<>(jsonPayload, headers);
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.postForEntity(url, requestEntity, String.class);   
+
     }
 
 //    public double laySoDu(int taiKhoan) {

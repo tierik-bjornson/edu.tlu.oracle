@@ -9,8 +9,8 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChuyenTienRequest {
-    private Long from;
-    private Long to;
-    private BigDecimal amount;
+    private Long tuTaiKhoan;
+    private Long denTaiKhoan;
+    private BigDecimal soTien;
     
 }

@@ -80,7 +80,12 @@
 <h1><i class="fas fa-university"></i> Hệ thống giao dịch ngân hàng</h1>
 
 <div class="container">
-
+	<div class="form-section">
+	    <h2><i class="fas fa-wallet"></i> Xem số dư</h2>
+	    <label>Tài khoản: <input type="number" id="laySoDuTaiKhoan"></label>
+	    <button onclick="laySoDu()">Thực hiện</button>
+	    <div class="result" id="resSoDu"></div>
+	</div>
     <div class="form-section">
         <h2><i class="fas fa-exchange-alt"></i> Chuyển tiền</h2>
         <label>Từ tài khoản: <input type="number" id="tuTaiKhoan"></label>
@@ -90,21 +95,16 @@
         <div class="result" id="resChuyen"></div>
     </div>
 
-    <div class="form-section">
-        <h2><i class="fas fa-wallet"></i> Xem số dư</h2>
-        <label>Tài khoản: <input type="number" id="laySoDuTaiKhoan"></label>
-        <button onclick="laySoDu()">Thực hiện</button>
-        <div class="result" id="resSoDu"></div>
-    </div>
 
-    <div class="form-section">
-        <h2><i class="fas fa-file-invoice-dollar"></i> In sao kê tháng</h2>
-        <label>Tài khoản: <input type="number" id="stk"></label>
-        <label>Tháng: <input type="number" id="thang"></label>
-        <label>Năm: <input type="number" id="nam"></label>
-        <button onclick="inSaoKe()">Thực hiện</button>
-        <div class="result"><pre id="resSaoKe"></pre></div>
-    </div>
+
+	<div class="form-section">
+	    <h2><i class="fas fa-piggy-bank"></i> Gửi tiền</h2>
+	    <label>Mã tài khoản: <input type="number" id="tkGui"></label>
+	    <label>Số tiền: <input type="number" id="soTienGui" step="0.01"></label>
+	    <button onclick="guiTien()">Thực hiện</button>
+	    <div class="result" id="resGui"></div>
+	</div>
+   
 
     <div class="form-section">
         <h2><i class="fas fa-hand-holding-usd"></i> Rút tiền</h2>
@@ -114,14 +114,15 @@
         <div class="result" id="resRut"></div>
     </div>
 
-    <div class="form-section">
-        <h2><i class="fas fa-piggy-bank"></i> Gửi tiền</h2>
-        <label>Mã tài khoản: <input type="number" id="tkGui"></label>
-        <label>Số tiền: <input type="number" id="soTienGui" step="0.01"></label>
-        <button onclick="guiTien()">Thực hiện</button>
-        <div class="result" id="resGui"></div>
-    </div>
 
+	<div class="form-section">
+	       <h2><i class="fas fa-file-invoice-dollar"></i> In sao kê tháng</h2>
+	       <label>Tài khoản: <input type="number" id="stk"></label>
+	       <label>Tháng: <input type="number" id="thang"></label>
+	       <label>Năm: <input type="number" id="nam"></label>
+	       <button onclick="inSaoKe()">Thực hiện</button>
+	       <div class="result"><pre id="resSaoKe"></pre></div>
+	   </div>
     <div class="form-section">
         <h2><i class="fas fa-percent"></i> Tính lãi</h2>
         <label>Tỷ lệ (%): <input type="number" id="tyLeLai" step="0.01"></label>
@@ -170,7 +171,7 @@ function rutTien() {
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({
-            taiKhoan: parseInt($('#tkRut').val()),
+            maTaiKhoan: parseInt($('#tkRut').val()),
             soTien: parseFloat($('#soTienRut').val())
         }),
         success: res => $('#resRut').text(res),
@@ -183,7 +184,7 @@ function guiTien() {
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({
-            taiKhoan: parseInt($('#tkGui').val()),
+            maTaiKhoan: parseInt($('#tkGui').val()),
             soTien: parseFloat($('#soTienGui').val())
         }),
         success: res => $('#resGui').text(res),
